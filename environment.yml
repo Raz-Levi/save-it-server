@@ -1,4 +1,4 @@
-name: watch-it
+name: save-it
 
 # for creating a virtual environment includes all the project's dependencies:
 # install conda.
@@ -10,4 +10,6 @@ channels:
   - conda-forge
 dependencies:
   - flask
-  - selenium
+  - pip
+  - pip:
+      - firebase_admin
