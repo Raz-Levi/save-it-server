@@ -1,11 +1,11 @@
 import firebase_admin
-from globals import project_configurations as config
+from globals import database_configurations as config
 from firebase_admin import credentials
 from firebase_admin import firestore
 
 
 def firestore_init():
-    cred = credentials.Certificate(config.ProjectConfigurations.get_service_account_key_path())
+    cred = credentials.Certificate(config.DatabaseConfigurations.get_service_account_key_path())
     firebase_admin.initialize_app(cred)
 
     db = firestore.client()

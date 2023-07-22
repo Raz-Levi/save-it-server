@@ -13,3 +13,4 @@ dependencies:
   - pip
   - pip:
       - firebase_admin
+      - requests
