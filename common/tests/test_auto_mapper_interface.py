@@ -30,10 +30,8 @@ class TestAutoMapperInterface:
             age: int
             email: str
 
-        config = {}
-
         self.auto_mapper.mapping_config = [
-            AutoMapperConfig(SourceObject, DestinationObject, config)
+            AutoMapperConfig(SourceObject, DestinationObject)
         ]
 
         # Act

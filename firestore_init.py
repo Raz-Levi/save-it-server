@@ -1,5 +1,5 @@
 import firebase_admin
-from globals import database_configurations as config
+from common.configuration import database_configurations as config
 from firebase_admin import credentials
 from firebase_admin import firestore
 

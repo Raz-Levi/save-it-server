@@ -2,7 +2,7 @@ from typing import Any
 
 
 class AutoMapperConfig:
-    def __init__(self, source_class: Any, destination_class: Any, config: dict):
+    def __init__(self, source_class: Any, destination_class: Any, config: dict = {}):
         self.name = self.get_map_name(source_class, destination_class)
         self.config = config
 
