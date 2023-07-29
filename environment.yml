@@ -17,3 +17,6 @@ dependencies:
       - Flask-RESTful
       - Flask-Swagger-UI
       - flasgger
+      - injector
+      - marshmallow-dataclass
+      - pytest
