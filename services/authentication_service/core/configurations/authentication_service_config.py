@@ -1,7 +1,18 @@
 from hidden_files import authentication
+from abc import ABC
 
 
-class AuthenticationConfigurations:
+class AuthenticationConfigurationsInterface(ABC):
+    @staticmethod
+    def get_signup_url() -> str:
+        pass
+
+    @staticmethod
+    def get_signin_password_url() -> str:
+        pass
+
+
+class AuthenticationConfigurations(AuthenticationConfigurationsInterface):
     _APP_KEY_API = authentication.APP_KEY_API
     _AUTHENTICATION_URL = authentication.AUTHENTICATION_URL
 

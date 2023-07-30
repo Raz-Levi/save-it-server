@@ -1,6 +1,8 @@
+from abc import ABC, abstractmethod
 from typing import Callable
 
 
-class CommunicationInterface:
-    def __init__(self, post: Callable):
-        self.post = post
+class CommunicationInterface(ABC):
+    @abstractmethod
+    def post(self) -> Callable:
+        pass

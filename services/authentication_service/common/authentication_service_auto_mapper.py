@@ -4,6 +4,7 @@ from services.authentication_service.client.api.sign_up.sign_up_request_api impo
 from services.authentication_service.core.models.sign_up.sign_up_request import EmailSignUpRequest
 from services.authentication_service.client.api.sign_up.sign_up_response_api import EmailSignUpResponseApi
 from services.authentication_service.core.models.sign_up.sign_up_response import EmailSignUpResponse
+from services.authentication_service.core.models.dal.dal_authentication_response import DalAuthenticationResponse
 
 
 class AuthenticationServiceAutoMapper(AutoMapperInterface):
@@ -11,5 +12,6 @@ class AuthenticationServiceAutoMapper(AutoMapperInterface):
         super().__init__()
         self.mapping_config = [
             AutoMapperConfig(EmailSignUpRequestApi, EmailSignUpRequest),
-            AutoMapperConfig(EmailSignUpResponseApi, EmailSignUpResponse),
+            AutoMapperConfig(DalAuthenticationResponse, EmailSignUpResponse),
+            AutoMapperConfig(EmailSignUpResponse, EmailSignUpResponseApi),
         ]

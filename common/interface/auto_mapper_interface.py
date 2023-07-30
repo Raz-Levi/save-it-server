@@ -1,6 +1,7 @@
 from marshmallow_dataclass import dataclass
 from typing import Any
 from common.objects.auto_mapper_config import AutoMapperConfig
+from enum import Enum
 
 
 class AutoMapperInterface:
@@ -26,7 +27,8 @@ class AutoMapperInterface:
         common_attributes = [common_attribute for common_attribute in source_attributes if common_attribute in destination_attributes and not common_attribute in mapping_config.keys()]
 
         for destination_attribute_name in common_attributes:
-            mapped_data[destination_attribute_name] = getattr(source_object, destination_attribute_name)
+            attr = getattr(source_object, destination_attribute_name)
+            mapped_data[destination_attribute_name] = attr.name if isinstance(attr, Enum) else attr
 
         return schema.Schema().load(mapped_data)
 

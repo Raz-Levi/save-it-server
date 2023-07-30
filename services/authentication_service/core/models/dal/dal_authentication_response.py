@@ -3,7 +3,7 @@ from services.authentication_service.client.enums.email_sign_up_status import Em
 
 
 @dataclass
-class EmailSignUpResponse:
+class DalAuthenticationResponse:
     is_success: bool
     status: EmailSignUpStatus
     id_token: str | None = None

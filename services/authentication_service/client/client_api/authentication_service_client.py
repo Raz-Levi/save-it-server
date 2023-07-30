@@ -10,7 +10,7 @@ class AuthenticationServiceClient:
         self.authentication_service_controller = authentication_service_controller
 
     @staticmethod
-    def get_instance():  # TODO: https://github.com/python-injector/injector
+    def get_instance():
         injector = Injector(lambda binder: binder.bind(AuthenticationServiceController, to=AuthenticationServiceController()))
         new_authentication_service_client = injector.get(AuthenticationServiceClient)
         new_authentication_service_client.authentication_service_controller = AuthenticationServiceController()
