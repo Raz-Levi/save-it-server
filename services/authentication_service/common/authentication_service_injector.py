@@ -1,6 +1,5 @@
 from injector import Injector, Module, Binder
 from typing import Any
-from services.authentication_service.core.controller.authentication_service_controller import AuthenticationServiceController
 from common.interface.auto_mapper_interface import AutoMapperInterface
 from services.authentication_service.common.authentication_service_auto_mapper import AuthenticationServiceAutoMapper
 from services.authentication_service.core.processor.authentication_service_processor import AuthenticationServiceProcessorInterface, AuthenticationServiceProcessor
@@ -22,11 +21,3 @@ class AuthenticationServiceInjector:
                 binder.bind(CommunicationInterface, to=Communication)
 
         return Injector(modules=[_AuthenticationServiceInjector()]).get(class_type)
-
-
-if __name__ == '__main__':
-    controller = AuthenticationServiceInjector.inject(AuthenticationServiceController)
-
-    from services.authentication_service.client.api.sign_up.sign_up_request_api import EmailSignUpRequestApi
-    response = controller.email_login(EmailSignUpRequestApi("raz2@qa.qa", "qaqaqa"))
-    print(response)
