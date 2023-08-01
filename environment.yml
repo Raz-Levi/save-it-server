@@ -20,3 +20,4 @@ dependencies:
       - injector
       - marshmallow-dataclass
       - pytest
+      - pytest-mock
