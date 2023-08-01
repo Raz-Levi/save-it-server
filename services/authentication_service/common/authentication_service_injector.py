@@ -28,5 +28,5 @@ if __name__ == '__main__':
     controller = AuthenticationServiceInjector.inject(AuthenticationServiceController)
 
     from services.authentication_service.client.api.sign_up.sign_up_request_api import EmailSignUpRequestApi
-    response = controller.email_sign_up(EmailSignUpRequestApi("raz@qa.qa", "qaqaqa"))
+    response = controller.email_login(EmailSignUpRequestApi("raz2@qa.qa", "qaqaqa"))
     print(response)

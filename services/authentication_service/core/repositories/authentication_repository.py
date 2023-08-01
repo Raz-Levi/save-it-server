@@ -12,7 +12,7 @@ class AuthenticationRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    def login_user_email(self, email: str, password: str) -> DalAuthenticationResponse:
+    def login_email(self, email: str, password: str) -> DalAuthenticationResponse:
         pass
 
 
@@ -39,7 +39,7 @@ class AuthenticationRepository(AuthenticationRepositoryInterface):
         else:
             return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
 
-    def login_user_email(self, email: str, password: str) -> DalAuthenticationResponse:
+    def login_email(self, email: str, password: str) -> DalAuthenticationResponse:
         payload = {
             "email": email,
             "password": password,
@@ -50,8 +50,8 @@ class AuthenticationRepository(AuthenticationRepositoryInterface):
         if 'idToken' in response:
             return DalAuthenticationResponse(is_success=True, status=EmailSignUpStatus.SUCCESS, id_token=response['idToken'])
 
-        elif 'error' in response and response['error']['message'] == "EMAIL_EXISTS":
-            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_EXISTS)
+        elif 'error' in response and response['error']['message'] == "EMAIL_NOT_FOUND":
+            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_NOT_FOUND)
 
         else:
             return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)

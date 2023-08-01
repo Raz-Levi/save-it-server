@@ -11,6 +11,10 @@ class AuthenticationServiceProcessorInterface(ABC):
     def email_sign_up(self, email_sign_up_request: EmailSignUpRequest) -> EmailSignUpResponse:
         pass
 
+    @abstractmethod
+    def email_login(self, email_sign_up_request: EmailSignUpRequest) -> EmailSignUpResponse:
+        pass
+
 
 class AuthenticationServiceProcessor(AuthenticationServiceProcessorInterface):
     @inject
@@ -20,4 +24,8 @@ class AuthenticationServiceProcessor(AuthenticationServiceProcessorInterface):
 
     def email_sign_up(self, email_sign_up_request: EmailSignUpRequest) -> EmailSignUpResponse:
         response = self.authentication_repository.register_new_user_email(email_sign_up_request.email, email_sign_up_request.password)
+        return self.mapper(response, EmailSignUpResponse)
+
+    def email_login(self, email_sign_up_request: EmailSignUpRequest) -> EmailSignUpResponse:
+        response = self.authentication_repository.login_email(email_sign_up_request.email, email_sign_up_request.password)
         return self.mapper(response, EmailSignUpResponse)

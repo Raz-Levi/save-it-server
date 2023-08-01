@@ -76,3 +76,64 @@ class TestAuthenticationRepository:
         assert response.is_success == False
         assert response.status == EmailSignUpStatus.UNKNOWN_ERROR
         assert response.id_token is None
+
+    def test_login_email_success(self, mocker: MockerFixture):
+        # Arrange
+        email = 'john@example.com'
+        password = "qaqaqa"
+        id_token = 123
+        signup_url = "abc"
+
+        response_mock = mocker.MagicMock(Response)
+        response_mock.json.return_value = {'idToken': id_token}
+        self.communication.post.return_value = lambda url, json: response_mock
+        self.configurations.get_signup_url.return_value = signup_url
+
+        # Act
+        response = self.authentication_repository.login_email(email, password)
+
+        # Assert
+        assert type(response) == DalAuthenticationResponse
+        assert response.is_success == True
+        assert response.status == EmailSignUpStatus.SUCCESS
+        assert response.id_token == id_token
+
+    def test_login_email_email_not_exists(self, mocker: MockerFixture):
+        # Arrange
+        email = 'john@example.com'
+        password = "qaqaqa"
+        signup_url = "abc"
+
+        response_mock = mocker.MagicMock(Response)
+        response_mock.json.return_value = {'error': {'message': "EMAIL_NOT_FOUND"}}
+        self.communication.post.return_value = lambda url, json: response_mock
+        self.configurations.get_signup_url.return_value = signup_url
+
+        # Act
+        response = self.authentication_repository.login_email(email, password)
+
+        # Assert
+        assert type(response) == DalAuthenticationResponse
+        assert response.is_success == False
+        assert response.status == EmailSignUpStatus.EMAIL_NOT_FOUND
+        assert response.id_token is None
+
+    def test_register_login_email_unknown_error(self, mocker: MockerFixture):
+        # Arrange
+        email = 'john@example.com'
+        password = "qaqaqa"
+        signup_url = "abc"
+
+        response_mock = mocker.MagicMock(Response)
+        response_mock.json.return_value = {}
+        self.communication.post.return_value = lambda url, json: response_mock
+        self.configurations.get_signup_url.return_value = signup_url
+
+        # Act
+        response = self.authentication_repository.login_email(email, password)
+
+        # Assert
+        assert type(response) == DalAuthenticationResponse
+        assert response.is_success == False
+        assert response.status == EmailSignUpStatus.UNKNOWN_ERROR
+        assert response.id_token is None
