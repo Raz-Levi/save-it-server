@@ -1,12 +1,15 @@
+from abc import ABC, abstractmethod
 from marshmallow_dataclass import dataclass
 from typing import Any
 from common.objects.auto_mapper_config import AutoMapperConfig
 from enum import Enum
 
 
-class AutoMapperInterface:
-    def __init__(self):
-        self.mapping_config = []  # Abstract
+class AutoMapperInterface(ABC):
+    @property
+    @abstractmethod
+    def mapping_config(self) -> list:
+        pass
 
     def __call__(self, source_object: Any, destination_class: Any, mapping_config: dict = None) -> Any:
         if mapping_config is None:

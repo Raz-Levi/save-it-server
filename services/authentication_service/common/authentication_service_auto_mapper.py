@@ -8,9 +8,9 @@ from services.authentication_service.core.models.dal.dal_authentication_response
 
 
 class AuthenticationServiceAutoMapper(AutoMapperInterface):
-    def __init__(self):
-        super().__init__()
-        self.mapping_config = [
+    @property
+    def mapping_config(self):
+        return [
             AutoMapperConfig(EmailSignUpRequestApi, EmailSignUpRequest),
             AutoMapperConfig(DalAuthenticationResponse, EmailSignUpResponse),
             AutoMapperConfig(EmailSignUpResponse, EmailSignUpResponseApi),

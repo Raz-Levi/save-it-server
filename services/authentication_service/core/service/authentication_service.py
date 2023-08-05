@@ -13,17 +13,24 @@ class AuthenticationService(ServiceInterface):
         super().__init__()
 
     @property
-    def get_service_name(self) -> str:
+    def service_name(self) -> str:
         return "authentication_service"
 
     def define_routes(self) -> None:
         super().define_routes()
 
-        @self.app.route(f"/{self.get_service_name}/sign_up", methods=['POST'])
-        def signup() -> Response:
+        @self.define_route("/email_sign_up", methods=['POST'])
+        def email_sign_up() -> Response:
             data = request.json
             email_signup_request_api = EmailSignUpRequestApi(data['email'], data['password'])
             result = self.authentication_service_controller.email_sign_up(email_signup_request_api)
+            return self.stringify_result(result)
+
+        @self.define_route("/email_login", methods=['POST'])
+        def email_login() -> Response:
+            data = request.json
+            email_signup_request_api = EmailSignUpRequestApi(data['email'], data['password'])
+            result = self.authentication_service_controller.email_login(email_signup_request_api)
             return self.stringify_result(result)
 
 

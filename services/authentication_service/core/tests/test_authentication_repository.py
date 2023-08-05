@@ -26,7 +26,7 @@ class TestAuthenticationRepository:
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'idToken': id_token}
         self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.get_signup_url.return_value = signup_url
+        self.configurations.signup_url.return_value = signup_url
 
         # Act
         response = self.authentication_repository.register_new_user_email(email, password)
@@ -46,7 +46,7 @@ class TestAuthenticationRepository:
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'error': {'message': "EMAIL_EXISTS"}}
         self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.get_signup_url.return_value = signup_url
+        self.configurations.signup_url.return_value = signup_url
 
         # Act
         response = self.authentication_repository.register_new_user_email(email, password)
@@ -55,6 +55,26 @@ class TestAuthenticationRepository:
         assert type(response) == DalAuthenticationResponse
         assert response.is_success == False
         assert response.status == EmailSignUpStatus.EMAIL_EXISTS
+        assert response.id_token is None
+
+    def test_register_new_user_email_invalid_email(self, mocker: MockerFixture):
+        # Arrange
+        email = 'johnexample.com'
+        password = "qaqaqa"
+        signup_url = "abc"
+
+        response_mock = mocker.MagicMock(Response)
+        response_mock.json.return_value = {'error': {'message': "INVALID_EMAIL"}}
+        self.communication.post.return_value = lambda url, json: response_mock
+        self.configurations.signup_url.return_value = signup_url
+
+        # Act
+        response = self.authentication_repository.register_new_user_email(email, password)
+
+        # Assert
+        assert type(response) == DalAuthenticationResponse
+        assert response.is_success == False
+        assert response.status == EmailSignUpStatus.INVALID_EMAIL
         assert response.id_token is None
 
     def test_register_new_user_email_unknown_error(self, mocker: MockerFixture):
@@ -66,7 +86,7 @@ class TestAuthenticationRepository:
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {}
         self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.get_signup_url.return_value = signup_url
+        self.configurations.signup_url.return_value = signup_url
 
         # Act
         response = self.authentication_repository.register_new_user_email(email, password)
@@ -87,7 +107,7 @@ class TestAuthenticationRepository:
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'idToken': id_token}
         self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.get_signup_url.return_value = signup_url
+        self.configurations.signup_url.return_value = signup_url
 
         # Act
         response = self.authentication_repository.login_email(email, password)
@@ -107,7 +127,7 @@ class TestAuthenticationRepository:
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'error': {'message': "EMAIL_NOT_FOUND"}}
         self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.get_signup_url.return_value = signup_url
+        self.configurations.signup_url.return_value = signup_url
 
         # Act
         response = self.authentication_repository.login_email(email, password)
@@ -116,6 +136,26 @@ class TestAuthenticationRepository:
         assert type(response) == DalAuthenticationResponse
         assert response.is_success == False
         assert response.status == EmailSignUpStatus.EMAIL_NOT_FOUND
+        assert response.id_token is None
+
+    def test_login_email_invalid_password(self, mocker: MockerFixture):
+        # Arrange
+        email = 'john@example.com'
+        password = "qaqaqa"
+        signup_url = "abc"
+
+        response_mock = mocker.MagicMock(Response)
+        response_mock.json.return_value = {'error': {'message': "INVALID_PASSWORD"}}
+        self.communication.post.return_value = lambda url, json: response_mock
+        self.configurations.signup_url.return_value = signup_url
+
+        # Act
+        response = self.authentication_repository.login_email(email, password)
+
+        # Assert
+        assert type(response) == DalAuthenticationResponse
+        assert response.is_success == False
+        assert response.status == EmailSignUpStatus.INVALID_PASSWORD
         assert response.id_token is None
 
     def test_register_login_email_unknown_error(self, mocker: MockerFixture):
@@ -127,7 +167,7 @@ class TestAuthenticationRepository:
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {}
         self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.get_signup_url.return_value = signup_url
+        self.configurations.signup_url.return_value = signup_url
 
         # Act
         response = self.authentication_repository.login_email(email, password)

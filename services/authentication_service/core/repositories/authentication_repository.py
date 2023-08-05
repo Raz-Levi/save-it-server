@@ -28,16 +28,20 @@ class AuthenticationRepository(AuthenticationRepositoryInterface):
             "password": password,
             "returnSecureToken": True
         }
-        response = self.communication.post()(self.configurations.get_signup_url(), json=payload).json()
+        response = self.communication.post()(self.configurations.signup_url, json=payload).json()
 
         if 'idToken' in response:
             return DalAuthenticationResponse(is_success=True, status=EmailSignUpStatus.SUCCESS, id_token=response['idToken'])
 
-        elif 'error' in response and response['error']['message'] == "EMAIL_EXISTS":
-            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_EXISTS)
+        elif 'error' in response:
+            match response['error']['message']:
+                case "EMAIL_EXISTS":
+                    return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_EXISTS)
 
-        else:
-            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
+                case "INVALID_EMAIL":
+                    return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.INVALID_EMAIL)
+
+        return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
 
     def login_email(self, email: str, password: str) -> DalAuthenticationResponse:
         payload = {
@@ -45,13 +49,17 @@ class AuthenticationRepository(AuthenticationRepositoryInterface):
             "password": password,
             "returnSecureToken": True
         }
-        response = self.communication.post()(self.configurations.get_signin_password_url(), json=payload).json()
+        response = self.communication.post()(self.configurations.login_url, json=payload).json()
 
         if 'idToken' in response:
             return DalAuthenticationResponse(is_success=True, status=EmailSignUpStatus.SUCCESS, id_token=response['idToken'])
 
-        elif 'error' in response and response['error']['message'] == "EMAIL_NOT_FOUND":
-            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_NOT_FOUND)
+        elif 'error' in response:
+            match response['error']['message']:
+                case "EMAIL_NOT_FOUND":
+                    return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_NOT_FOUND)
 
-        else:
-            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
+                case "INVALID_PASSWORD":
+                    return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.INVALID_PASSWORD)
+
+        return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
