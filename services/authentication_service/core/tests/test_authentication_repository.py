@@ -5,16 +5,16 @@ from services.authentication_service.core.repositories.authentication_repository
 from common.interface.communication_interface import CommunicationInterface
 from services.authentication_service.core.configurations.authentication_service_config import AuthenticationConfigurationsInterface
 from services.authentication_service.core.models.dal.dal_authentication_response import DalAuthenticationResponse
-from services.authentication_service.client.enums.email_sign_up_status import EmailSignUpStatus
+from services.authentication_service.common.enums.email_sign_up_status import EmailSignUpStatus
 
 
 class TestAuthenticationRepository:
     @pytest.fixture(autouse=True)
     def setup_data(self, mocker: MockerFixture):
-        self.communication = mocker.MagicMock(CommunicationInterface)
-        self.configurations = mocker.MagicMock(AuthenticationConfigurationsInterface)
+        self._communication = mocker.MagicMock(CommunicationInterface)
+        self._configurations = mocker.MagicMock(AuthenticationConfigurationsInterface)
 
-        self.authentication_repository = AuthenticationRepository(self.communication, self.configurations)
+        self._authentication_repository = AuthenticationRepository(self._communication, self._configurations)
 
     def test_register_new_user_email_success(self, mocker: MockerFixture):
         # Arrange
@@ -25,11 +25,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'idToken': id_token}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.register_new_user_email(email, password)
+        response = self._authentication_repository.register_new_user_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -45,11 +45,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'error': {'message': "EMAIL_EXISTS"}}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.register_new_user_email(email, password)
+        response = self._authentication_repository.register_new_user_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -65,11 +65,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'error': {'message': "INVALID_EMAIL"}}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.register_new_user_email(email, password)
+        response = self._authentication_repository.register_new_user_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -85,11 +85,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.register_new_user_email(email, password)
+        response = self._authentication_repository.register_new_user_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -106,11 +106,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'idToken': id_token}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.login_email(email, password)
+        response = self._authentication_repository.login_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -126,11 +126,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'error': {'message': "EMAIL_NOT_FOUND"}}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.login_email(email, password)
+        response = self._authentication_repository.login_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -146,11 +146,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {'error': {'message': "INVALID_PASSWORD"}}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.login_email(email, password)
+        response = self._authentication_repository.login_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse
@@ -166,11 +166,11 @@ class TestAuthenticationRepository:
 
         response_mock = mocker.MagicMock(Response)
         response_mock.json.return_value = {}
-        self.communication.post.return_value = lambda url, json: response_mock
-        self.configurations.signup_url.return_value = signup_url
+        self._communication.post.return_value = lambda url, json: response_mock
+        self._configurations.signup_url.return_value = signup_url
 
         # Act
-        response = self.authentication_repository.login_email(email, password)
+        response = self._authentication_repository.login_email(email, password)
 
         # Assert
         assert type(response) == DalAuthenticationResponse

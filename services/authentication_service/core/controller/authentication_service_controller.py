@@ -20,15 +20,15 @@ class AuthenticationServiceControllerInterface(ABC):
 class AuthenticationServiceController(AuthenticationServiceControllerInterface):
     @inject
     def __init__(self, mapper: AutoMapperInterface, authentication_service_processor: AuthenticationServiceProcessorInterface):
-        self.mapper = mapper
-        self.authentication_service_processor = authentication_service_processor
+        self._mapper = mapper
+        self._authentication_service_processor = authentication_service_processor
 
     def email_sign_up(self, email_sign_up_request_api: EmailSignUpRequestApi) -> EmailSignUpResponseApi:
-        email_sign_up_request = self.mapper(email_sign_up_request_api, EmailSignUpRequest)
-        email_sign_up_result = self.authentication_service_processor.email_sign_up(email_sign_up_request)
-        return self.mapper(email_sign_up_result, EmailSignUpResponseApi)
+        email_sign_up_request = self._mapper(email_sign_up_request_api, EmailSignUpRequest)
+        email_sign_up_result = self._authentication_service_processor.email_sign_up(email_sign_up_request)
+        return self._mapper(email_sign_up_result, EmailSignUpResponseApi)
 
     def email_login(self, email_sign_up_request_api: EmailSignUpRequestApi) -> EmailSignUpResponseApi:
-        email_sign_up_request = self.mapper(email_sign_up_request_api, EmailSignUpRequest)
-        email_sign_up_result = self.authentication_service_processor.email_login(email_sign_up_request)
-        return self.mapper(email_sign_up_result, EmailSignUpResponseApi)
+        email_sign_up_request = self._mapper(email_sign_up_request_api, EmailSignUpRequest)
+        email_sign_up_result = self._authentication_service_processor.email_login(email_sign_up_request)
+        return self._mapper(email_sign_up_result, EmailSignUpResponseApi)

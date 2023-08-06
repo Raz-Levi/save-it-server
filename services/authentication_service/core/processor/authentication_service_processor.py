@@ -19,13 +19,13 @@ class AuthenticationServiceProcessorInterface(ABC):
 class AuthenticationServiceProcessor(AuthenticationServiceProcessorInterface):
     @inject
     def __init__(self, mapper: AutoMapperInterface, authentication_repository: AuthenticationRepositoryInterface):
-        self.mapper = mapper
-        self.authentication_repository = authentication_repository
+        self._mapper = mapper
+        self._authentication_repository = authentication_repository
 
     def email_sign_up(self, email_sign_up_request: EmailSignUpRequest) -> EmailSignUpResponse:
-        response = self.authentication_repository.register_new_user_email(email_sign_up_request.email, email_sign_up_request.password)
-        return self.mapper(response, EmailSignUpResponse)
+        response = self._authentication_repository.register_new_user_email(email_sign_up_request.email, email_sign_up_request.password)
+        return self._mapper(response, EmailSignUpResponse)
 
     def email_login(self, email_sign_up_request: EmailSignUpRequest) -> EmailSignUpResponse:
-        response = self.authentication_repository.login_email(email_sign_up_request.email, email_sign_up_request.password)
-        return self.mapper(response, EmailSignUpResponse)
+        response = self._authentication_repository.login_email(email_sign_up_request.email, email_sign_up_request.password)
+        return self._mapper(response, EmailSignUpResponse)

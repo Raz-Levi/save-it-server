@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from services.authentication_service.client.enums.email_sign_up_status import EmailSignUpStatus
+from services.authentication_service.common.enums.email_sign_up_status import EmailSignUpStatus
 
 
 @dataclass
