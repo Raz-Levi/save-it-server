@@ -14,10 +14,8 @@ dependencies:
       - firebase_admin
       - requests
       - Flask
-      - Flask-RESTful
-      - Flask-Swagger-UI
-      - flasgger
       - injector
       - marshmallow-dataclass
       - pytest
       - pytest-mock
+      - flask-restx

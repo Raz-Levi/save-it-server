@@ -4,13 +4,17 @@ from injector import inject
 from services.authentication_service.client.api.sign_up.sign_up_request_api import EmailSignUpRequestApi
 from services.authentication_service.common.authentication_service_injector import AuthenticationServiceInjector
 from services.authentication_service.core.controller.authentication_service_controller import AuthenticationServiceControllerInterface
+from flask_restx import Resource, fields, Namespace
 
 
 class AuthenticationService(ServiceInterface):
     @inject
     def __init__(self, authentication_service_controller: AuthenticationServiceControllerInterface):
-        self.authentication_service_controller = authentication_service_controller
+        self._authentication_service_controller = authentication_service_controller
+        self._authentication_namespace = self.define_namespace(namespace_name='authentication', description='Authentication Related Requests')
+
         super().__init__()
+        self._api.add_namespace(self._authentication_namespace)
 
     @property
     def service_name(self) -> str:
@@ -19,20 +23,35 @@ class AuthenticationService(ServiceInterface):
     def define_routes(self) -> None:
         super().define_routes()
 
-        @self.define_route("/email_sign_up", methods=['POST'])
-        def email_sign_up() -> Response:
-            data = request.json
-            email_signup_request_api = EmailSignUpRequestApi(data['email'], data['password'])
-            result = self.authentication_service_controller.email_sign_up(email_signup_request_api)
-            return self.stringify_result(result)
+        email_sign_up_request_api_model = self._api.model('EmailSignUpRequestApi', {
+            'email': fields.String(required=True, description="User's Email Address"),
+            'password': fields.String(required=True, description="User's Password")
+        })
 
-        @self.define_route("/email_login", methods=['POST'])
-        def email_login() -> Response:
-            data = request.json
-            email_signup_request_api = EmailSignUpRequestApi(data['email'], data['password'])
-            result = self.authentication_service_controller.email_login(email_signup_request_api)
-            return self.stringify_result(result)
+        @self._authentication_namespace.route('/email_sign_up')
+        class EmailSignUpResource(Resource):
+            @staticmethod
+            @self._api.expect(email_sign_up_request_api_model)
+            def post() -> Response:
+                data = request.json
+                email_signup_request_api = EmailSignUpRequestApi(data['email'], data['password'])
+                result = self._authentication_service_controller.email_sign_up(email_signup_request_api)
+                return self.stringify_result(result)
+
+        @self._authentication_namespace.route('/email_login')
+        class EmailLoginResource(Resource):
+            @staticmethod
+            @self._api.expect(email_sign_up_request_api_model)
+            def post() -> Response:
+                data = request.json
+                email_signup_request_api = EmailSignUpRequestApi(data['email'], data['password'])
+                result = self._authentication_service_controller.email_login(email_signup_request_api)
+                return self.stringify_result(result)
 
 
 if __name__ == "__main__":
-    AuthenticationServiceInjector.inject(AuthenticationService).run_service(8080)
+    AuthenticationServiceInjector.inject(AuthenticationService).run_service(8080)  #TODO- move port to config
+
+
+
+# TODO- swagger, log4python, move port to config, send requests in client, create FES that hold the client, create maintanance service that run all services together and separated, find way to seperate QA and PROD
