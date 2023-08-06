@@ -7,7 +7,7 @@ from common.objects.auto_mapper_config import AutoMapperConfig
 class TestAutoMapperInterface:
     @pytest.fixture(autouse=True)
     def setup_data(self):
-        self._auto_mapper = AutoMapperInterface()
+        self._auto_mapper = None
 
     def test_map_same_attributes(self):
         # Arrange
@@ -30,9 +30,12 @@ class TestAutoMapperInterface:
             age: int
             email: str
 
-        self._auto_mapper.mapping_config = [
-            AutoMapperConfig(SourceObject, DestinationObject)
-        ]
+        class AutoMapper(AutoMapperInterface):
+            @property
+            def mapping_config(self) -> list:
+                return [AutoMapperConfig(SourceObject, DestinationObject)]
+
+        self._auto_mapper = AutoMapper()
 
         # Act
         source_object = SourceObject(first_name=first_name, last_name=last_name, age=age, email=email)
@@ -69,9 +72,12 @@ class TestAutoMapperInterface:
             'full_name': lambda source_obj: f"{source_obj.first_name} {source_obj.last_name}",
         }
 
-        self._auto_mapper.mapping_config = [
-            AutoMapperConfig(SourceObject, DestinationObject, config)
-        ]
+        class AutoMapper(AutoMapperInterface):
+            @property
+            def mapping_config(self) -> list:
+                return [AutoMapperConfig(SourceObject, DestinationObject, config)]
+
+        self._auto_mapper = AutoMapper()
 
         # Act
         source_object = SourceObject(first_name=first_name, last_name=last_name, age=age, email=email)
@@ -109,9 +115,12 @@ class TestAutoMapperInterface:
             'last_name': 'first_name',
         }
 
-        self._auto_mapper.mapping_config = [
-            AutoMapperConfig(SourceObject, DestinationObject, config)
-        ]
+        class AutoMapper(AutoMapperInterface):
+            @property
+            def mapping_config(self) -> list:
+                return [AutoMapperConfig(SourceObject, DestinationObject, config)]
+
+        self._auto_mapper = AutoMapper()
 
         # Act
         source_object = SourceObject(first_name=first_name, last_name=last_name, age=age, email=email)
