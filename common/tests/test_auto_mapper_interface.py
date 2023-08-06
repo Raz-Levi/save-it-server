@@ -7,7 +7,7 @@ from common.objects.auto_mapper_config import AutoMapperConfig
 class TestAutoMapperInterface:
     @pytest.fixture(autouse=True)
     def setup_data(self):
-        self.auto_mapper = AutoMapperInterface()
+        self._auto_mapper = AutoMapperInterface()
 
     def test_map_same_attributes(self):
         # Arrange
@@ -30,13 +30,13 @@ class TestAutoMapperInterface:
             age: int
             email: str
 
-        self.auto_mapper.mapping_config = [
+        self._auto_mapper.mapping_config = [
             AutoMapperConfig(SourceObject, DestinationObject)
         ]
 
         # Act
         source_object = SourceObject(first_name=first_name, last_name=last_name, age=age, email=email)
-        destination_object = self.auto_mapper(source_object, DestinationObject)
+        destination_object = self._auto_mapper(source_object, DestinationObject)
 
         # Assert
         assert type(destination_object) == DestinationObject
@@ -69,13 +69,13 @@ class TestAutoMapperInterface:
             'full_name': lambda source_obj: f"{source_obj.first_name} {source_obj.last_name}",
         }
 
-        self.auto_mapper.mapping_config = [
+        self._auto_mapper.mapping_config = [
             AutoMapperConfig(SourceObject, DestinationObject, config)
         ]
 
         # Act
         source_object = SourceObject(first_name=first_name, last_name=last_name, age=age, email=email)
-        destination_object = self.auto_mapper(source_object, DestinationObject)
+        destination_object = self._auto_mapper(source_object, DestinationObject)
 
         # Assert
         assert type(destination_object) == DestinationObject
@@ -109,13 +109,13 @@ class TestAutoMapperInterface:
             'last_name': 'first_name',
         }
 
-        self.auto_mapper.mapping_config = [
+        self._auto_mapper.mapping_config = [
             AutoMapperConfig(SourceObject, DestinationObject, config)
         ]
 
         # Act
         source_object = SourceObject(first_name=first_name, last_name=last_name, age=age, email=email)
-        destination_object = self.auto_mapper(source_object, DestinationObject)
+        destination_object = self._auto_mapper(source_object, DestinationObject)
 
         # Assert
         assert type(destination_object) == DestinationObject
