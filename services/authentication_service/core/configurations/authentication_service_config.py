@@ -1,4 +1,4 @@
-from hidden_files import authentication
+from hidden_files.authentication import authentication
 from abc import ABC, abstractmethod
 
 

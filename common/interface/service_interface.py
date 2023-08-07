@@ -40,7 +40,7 @@ class ServiceInterface(ABC):
         return Response(json.dumps(result.__dict__, cls=self._app.json_encoder), content_type='application/json')
 
     def run_service(self, port: int) -> None:
-        self._app.run(debug=True, port=port)
+        self._app.run(debug=False, port=port)
 
 
 class EnumEncoder(json.JSONEncoder):
