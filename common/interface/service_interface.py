@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from flask import Flask
 import json
 from enum import Enum
 from typing import Any
-from flask import Response
+from flask import Flask, Response
 from flask_restx import Api, Resource, Namespace
 
 
@@ -22,19 +21,12 @@ class ServiceInterface(ABC):
     def service_name(self) -> str:
         pass
 
+    @abstractmethod
+    def define_routes(self) -> None:
+        pass
+
     def define_namespace(self, namespace_name: str, **kwargs) -> Namespace:
         return Namespace(name=f"{self.service_name}/{namespace_name}", **kwargs)
-
-    def define_routes(self) -> None:
-        @self._maintenance_namespace.route('/checklivestatus')
-        class CheckLiveStatusResource(Resource):
-            @staticmethod
-            @self._api.doc()
-            def post() -> bool:
-                return self.checklivestatus()
-
-    def checklivestatus(self) -> bool:
-        return True
 
     def stringify_result(self, result: Any) -> Response:
         return Response(json.dumps(result.__dict__, cls=self._app.json_encoder), content_type='application/json')
