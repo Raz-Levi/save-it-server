@@ -6,6 +6,7 @@ from common.interface.communication_interface import CommunicationInterface
 from services.authentication_service.core.configurations.authentication_service_config import AuthenticationConfigurationsInterface
 from services.authentication_service.core.models.dal.dal_authentication_response import DalAuthenticationResponse
 from services.authentication_service.common.enums.email_sign_up_status import EmailSignUpStatus
+from common.objects.logger import LoggerInterface
 
 
 class TestAuthenticationRepository:
@@ -13,8 +14,11 @@ class TestAuthenticationRepository:
     def setup_data(self, mocker: MockerFixture):
         self._communication = mocker.MagicMock(CommunicationInterface)
         self._configurations = mocker.MagicMock(AuthenticationConfigurationsInterface)
+        self._logger = mocker.MagicMock(LoggerInterface)
+        self._logger.log_info.return_value = None
+        self._logger.log_critical.return_value = None
 
-        self._authentication_repository = AuthenticationRepository(self._communication, self._configurations)
+        self._authentication_repository = AuthenticationRepository(self._communication, self._configurations, self._logger)
 
     def test_register_new_user_email_success(self, mocker: MockerFixture):
         # Arrange
