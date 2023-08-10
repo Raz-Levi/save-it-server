@@ -4,11 +4,12 @@ from common.interface.communication_interface import CommunicationInterface
 from common.interface.server_configurations_interface import ServerConfigurationsInterface
 from services.authentication_service.client.api.sign_up.sign_up_request_api import EmailSignUpRequestApi
 from services.authentication_service.client.api.sign_up.sign_up_response_api import EmailSignUpResponseApi
+from services.authentication_service.client.api.checklivestatus.authentication_check_live_status_response_api import AuthenticationCheckLiveStatusResponseApi
 
 
 class AuthenticationServiceClientInterface(ABC):
     @abstractmethod
-    def checklivestatus(self) -> bool:
+    def checklivestatus(self) -> AuthenticationCheckLiveStatusResponseApi:
         pass
 
     @abstractmethod
@@ -26,9 +27,10 @@ class AuthenticationServiceClient(AuthenticationServiceClientInterface):
         self._server_configurations = server_configurations
         self._communication = communication
 
-    def checklivestatus(self) -> bool:
+    def checklivestatus(self) -> AuthenticationCheckLiveStatusResponseApi:
         checklivestatus_url = f'{self._server_configurations.authentication_service_config.full_server_url}/authentication_service/maintenance/checklivestatus'
-        return self._communication.post()(checklivestatus_url).json()
+        response = self._communication.post()(checklivestatus_url).json()
+        return AuthenticationCheckLiveStatusResponseApi(**response)
 
     def email_sign_up(self, sign_up_request_api: EmailSignUpRequestApi) -> EmailSignUpResponseApi:
         email_sign_up_url = f'{self._server_configurations.authentication_service_config.full_server_url}/authentication_service/authentication/email_sign_up'

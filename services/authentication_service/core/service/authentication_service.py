@@ -22,12 +22,17 @@ class AuthenticationService(ServiceInterface):
         return "authentication_service"
 
     def define_routes(self) -> None:
-        super().define_routes()
-
         email_sign_up_request_api_model = self._api.model('EmailSignUpRequestApi', {
             'email': fields.String(required=True, description="User's Email Address"),
             'password': fields.String(required=True, description="User's Password")
         })
+
+        @self._maintenance_namespace.route('/checklivestatus')
+        class CheckLiveStatusResource(Resource):
+            @staticmethod
+            def post() -> Response:
+                result = self._authentication_service_controller.checklivestatus()
+                return self.stringify_result(result)
 
         @self._authentication_namespace.route('/email_sign_up')
         class EmailSignUpResource(Resource):

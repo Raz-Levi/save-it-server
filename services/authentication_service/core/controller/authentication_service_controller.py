@@ -5,9 +5,14 @@ from services.authentication_service.client.api.sign_up.sign_up_request_api impo
 from services.authentication_service.client.api.sign_up.sign_up_response_api import EmailSignUpResponseApi
 from services.authentication_service.core.processor.authentication_service_processor import AuthenticationServiceProcessorInterface
 from services.authentication_service.core.models.sign_up.sign_up_request import EmailSignUpRequest
+from services.authentication_service.client.api.checklivestatus.authentication_check_live_status_response_api import AuthenticationCheckLiveStatusResponseApi
 
 
 class AuthenticationServiceControllerInterface(ABC):
+    @abstractmethod
+    def checklivestatus(self) -> AuthenticationCheckLiveStatusResponseApi:
+        pass
+
     @abstractmethod
     def email_sign_up(self, email_sign_up_request_api: EmailSignUpRequestApi) -> EmailSignUpResponseApi:
         pass
@@ -22,6 +27,10 @@ class AuthenticationServiceController(AuthenticationServiceControllerInterface):
     def __init__(self, mapper: AutoMapperInterface, authentication_service_processor: AuthenticationServiceProcessorInterface):
         self._mapper = mapper
         self._authentication_service_processor = authentication_service_processor
+
+    def checklivestatus(self) -> AuthenticationCheckLiveStatusResponseApi:
+        checklivestatus_result = self._authentication_service_processor.checklivestatus()
+        return self._mapper(checklivestatus_result, AuthenticationCheckLiveStatusResponseApi)
 
     def email_sign_up(self, email_sign_up_request_api: EmailSignUpRequestApi) -> EmailSignUpResponseApi:
         email_sign_up_request = self._mapper(email_sign_up_request_api, EmailSignUpRequest)
