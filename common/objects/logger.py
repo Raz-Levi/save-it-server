@@ -26,8 +26,8 @@ class LoggerInterface(ABC):
 
 
 class Logger(LoggerInterface):
-    def __init__(self, logger_name: str):
-        self.logger = logging.getLogger(logger_name)
+    def __init__(self):
+        self.logger = logging.getLogger("save-it-logger")
         log_level = logging.DEBUG  # TODO- logging.INFO in QA and PROD
         self.logger.setLevel(log_level)
 

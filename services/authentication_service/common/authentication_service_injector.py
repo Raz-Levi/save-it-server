@@ -9,6 +9,7 @@ from services.authentication_service.core.configurations.authentication_service_
 from common.interface.communication_interface import CommunicationInterface
 from common.objects.communication import Communication
 from services.authentication_service.core.configurations.authentication_preferences import AuthenticationPreferencesInterface, AuthenticationPreferences
+from common.objects.logger import Logger, LoggerInterface
 
 
 class AuthenticationServiceInjector:
@@ -23,5 +24,6 @@ class AuthenticationServiceInjector:
                 binder.bind(AuthenticationConfigurationsInterface, to=AuthenticationConfigurations)
                 binder.bind(CommunicationInterface, to=Communication)
                 binder.bind(AuthenticationPreferencesInterface, to=AuthenticationPreferences)
+                binder.bind(LoggerInterface, to=Logger)
 
         return Injector(modules=[_AuthenticationServiceInjector()]).get(class_type)
