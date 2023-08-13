@@ -132,3 +132,4 @@ dmypy.json
 
 #Hidden Files
 hidden_files/*
+.DS_Store
