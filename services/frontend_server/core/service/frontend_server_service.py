@@ -1,9 +1,11 @@
-from common.configuration.server_configutrations.server_configurations_local import ServerConfigurationsLocal
+import argparse
+from common.enums.environment_configuration import EnvironmentConfiguration
 from common.interface.service_interface import ServiceInterface
 from flask import request, Response
 from injector import inject
 from services.frontend_server.client.api.sign_up.frontend_server_sign_up_request_api import FrontendServerEmailSignUpRequestApi
 from services.frontend_server.common.frontend_server_injector import FrontendServerInjector
+from services.frontend_server.configuration.frontend_server_configuration_factory import FrontendServerConfigurationFactory
 from services.frontend_server.core.controller.frontend_server_controller import FrontendServerControllerInterface
 from flask_restx import Resource, fields
 
@@ -56,12 +58,9 @@ class FrontendServer(ServiceInterface):
 
 
 if __name__ == '__main__':
-    server_config = ServerConfigurationsLocal()  # TODO- update tp QA and Prod
-    FrontendServerInjector.inject(FrontendServer).run_service(server_config.frontend_server_config.port)
+    parser = argparse.ArgumentParser(description='Run frontend server according to the configurations')
+    parser.add_argument('--env', type=EnvironmentConfiguration, help='The environment that the service run in', choices=list(EnvironmentConfiguration), default=EnvironmentConfiguration.LOCAL)
+    args = parser.parse_args()
 
-# TODO-
-#  validations
-#  log4python
-#  write tests for processors
-#  create maintanance service that run all services together and separated
-#  find way to seperate QA and PROD
+    frontend_server_configuration_factory = FrontendServerConfigurationFactory()
+    FrontendServerInjector(args.env).inject(FrontendServer).run_service(frontend_server_configuration_factory(args.env))

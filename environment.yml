@@ -9,6 +9,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
+  - python==3.12.3
   - pip
   - pip:
       - firebase_admin
@@ -19,3 +20,4 @@ dependencies:
       - pytest
       - pytest-mock
       - flask-restx
+      - flask-cors

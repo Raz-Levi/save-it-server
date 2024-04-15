@@ -1,5 +1,7 @@
 from injector import Injector, Module, Binder
 from typing import Any
+from common.enums.environment_configuration import EnvironmentConfiguration
+from common.interface.InjectorInterface import InjectorInterface
 from common.interface.auto_mapper_interface import AutoMapperInterface
 from services.authentication_service.common.authentication_service_auto_mapper import AuthenticationServiceAutoMapper
 from services.authentication_service.core.controller.authentication_service_controller import AuthenticationServiceControllerInterface, AuthenticationServiceController
@@ -12,9 +14,11 @@ from services.authentication_service.core.configurations.authentication_preferen
 from common.objects.logger import Logger, LoggerInterface
 
 
-class AuthenticationServiceInjector:
-    @staticmethod
-    def inject(class_type: Any) -> None:
+class AuthenticationServiceInjector(InjectorInterface):
+    def __init__(self, environment_configuration: EnvironmentConfiguration = EnvironmentConfiguration.LOCAL):
+        self.environment_configuration = environment_configuration
+
+    def inject(self, class_type: Any) -> None:
         class _AuthenticationServiceInjector(Module):
             def configure(self, binder: Binder) -> None:
                 binder.bind(AuthenticationServiceControllerInterface, to=AuthenticationServiceController)

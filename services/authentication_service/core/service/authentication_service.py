@@ -1,9 +1,11 @@
-from common.configuration.server_configutrations.server_configurations_local import ServerConfigurationsLocal
+import argparse
+from common.enums.environment_configuration import EnvironmentConfiguration
 from common.interface.service_interface import ServiceInterface
 from flask import request, Response
 from injector import inject
 from services.authentication_service.client.api.sign_up.sign_up_request_api import EmailSignUpRequestApi
 from services.authentication_service.common.authentication_service_injector import AuthenticationServiceInjector
+from services.authentication_service.configuration.authentication_service_configuration_factory import AuthenticationServiceConfigurationFactory
 from services.authentication_service.core.controller.authentication_service_controller import AuthenticationServiceControllerInterface
 from flask_restx import Resource, fields
 
@@ -56,5 +58,9 @@ class AuthenticationService(ServiceInterface):
 
 
 if __name__ == '__main__':
-    server_config = ServerConfigurationsLocal()  # TODO- update tp QA and Prod
-    AuthenticationServiceInjector.inject(AuthenticationService).run_service(server_config.authentication_service_config.port)
+    parser = argparse.ArgumentParser(description='Run authentication service according to the configurations')
+    parser.add_argument('--env', type=EnvironmentConfiguration, help='The environment that the service run in', choices=list(EnvironmentConfiguration), default=EnvironmentConfiguration.LOCAL)
+    args = parser.parse_args()
+
+    authentication_service_configuration_factory = AuthenticationServiceConfigurationFactory()
+    AuthenticationServiceInjector(args.env).inject(AuthenticationService).run_service(authentication_service_configuration_factory(args.env))

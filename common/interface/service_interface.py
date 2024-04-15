@@ -3,12 +3,14 @@ import json
 from enum import Enum
 from typing import Any
 from flask import Flask, Response
-from flask_restx import Api, Resource, Namespace
+from flask_restx import Api, Namespace
+from flask_cors import CORS
 
 
 class ServiceInterface(ABC):
     def __init__(self):
         self._app = Flask(self.service_name)
+        CORS(self._app)
         self._app.json_encoder = EnumEncoder
         self._api = Api(app=self._app, title=self.service_name, description=f'API for {self.service_name}', doc="/swagger", version="", )
 
@@ -31,8 +33,9 @@ class ServiceInterface(ABC):
     def stringify_result(self, result: Any) -> Response:
         return Response(json.dumps(result.__dict__, cls=self._app.json_encoder), content_type='application/json')
 
-    def run_service(self, port: int) -> None:
-        self._app.run(debug=False, port=port)
+    def run_service(self, configuration: object) -> None:
+        self._app.config.from_object(configuration)
+        self._app.run()
 
 
 class EnumEncoder(json.JSONEncoder):
