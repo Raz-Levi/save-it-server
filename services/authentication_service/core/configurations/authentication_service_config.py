@@ -16,12 +16,11 @@ class AuthenticationConfigurationsInterface(ABC):
 
 class AuthenticationConfigurations(AuthenticationConfigurationsInterface):
     _APP_KEY_API = authentication.APP_KEY_API
-    _AUTHENTICATION_URL = authentication.AUTHENTICATION_URL
 
     @property
     def signup_url(self) -> str:
-        return f"{AuthenticationConfigurations._AUTHENTICATION_URL}signUp?key={AuthenticationConfigurations._APP_KEY_API}"
+        return f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={AuthenticationConfigurations._APP_KEY_API}"
 
     @property
     def login_url(self) -> str:
-        return f"{AuthenticationConfigurations._AUTHENTICATION_URL}signInWithPassword?key={AuthenticationConfigurations._APP_KEY_API}"
+        return f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={AuthenticationConfigurations._APP_KEY_API}"

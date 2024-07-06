@@ -7,6 +7,9 @@ from services.frontend_server.configuration.frontend_server_configuration_factor
 from services.frontend_server.core.service.frontend_server_service import FrontendServer
 from services.authentication_service.common.authentication_service_injector import AuthenticationServiceInjector
 from services.authentication_service.core.service.authentication_service import AuthenticationService
+from services.user_information_service.common.user_information_service_injector import UserInformationServiceInjector
+from services.user_information_service.configuration.user_information_service_configuration_factory import UserInformationServiceConfigurationFactory
+from services.user_information_service.core.service.user_information_service import UserInformationService
 
 
 def run_frontend_server(environment_configuration: EnvironmentConfiguration) -> threading.Thread:
@@ -19,10 +22,16 @@ def run_authentication_service(environment_configuration: EnvironmentConfigurati
     return threading.Thread(target=lambda: AuthenticationServiceInjector(environment_configuration).inject(AuthenticationService).run_service(authentication_service_configuration_factory(environment_configuration)))
 
 
+def run_user_information_service(environment_configuration: EnvironmentConfiguration) -> threading.Thread:
+    user_information_service_configuration_factory = UserInformationServiceConfigurationFactory()
+    return threading.Thread(target=lambda: UserInformationServiceInjector(environment_configuration).inject(UserInformationService).run_service(user_information_service_configuration_factory(environment_configuration)))
+
+
 def run_services_function() -> list:
     return [
         run_frontend_server,
-        run_authentication_service
+        run_authentication_service,
+        run_user_information_service,
     ]
 
 

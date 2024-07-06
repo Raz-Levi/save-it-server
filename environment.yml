@@ -16,6 +16,8 @@ dependencies:
       - requests
       - Flask
       - injector
+      - email-validator
+      - phonenumbers
       - marshmallow-dataclass
       - pytest
       - pytest-mock
