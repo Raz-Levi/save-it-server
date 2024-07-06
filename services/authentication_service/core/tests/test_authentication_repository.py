@@ -15,8 +15,8 @@ class TestAuthenticationRepository:
         self._communication = mocker.MagicMock(CommunicationInterface)
         self._configurations = mocker.MagicMock(AuthenticationConfigurationsInterface)
         self._logger = mocker.MagicMock(LoggerInterface)
-        self._logger.log_info.return_value = None
-        self._logger.log_critical.return_value = None
+        self._logger.info.return_value = None
+        self._logger.critical.return_value = None
 
         self._authentication_repository = AuthenticationRepository(self._communication, self._configurations, self._logger)
 

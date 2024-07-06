@@ -30,23 +30,30 @@ class AuthenticationRepository(AuthenticationRepositoryInterface):
             "password": password,
             "returnSecureToken": True
         }
-        response = self._communication.post()(self._configurations.signup_url, json=payload).json()
 
-        if 'idToken' in response:
-            self._logger.log_info("Email SignUp Success")
+        try:
+            response = self._communication.post()(self._configurations.signup_url, json=payload)  # TODO- move json after the request
+
+        except Exception as e:
+            self._logger.critical(f"Email SignUp Failure: {e}")
+            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
+
+        response_json = response.json()
+        if 'idToken' in response_json:
+            self._logger.info("Email SignUp Success")
             return DalAuthenticationResponse(is_success=True, status=EmailSignUpStatus.SUCCESS, id_token=response['idToken'])
 
-        elif 'error' in response:
-            match response['error']['message']:
+        elif 'error' in response_json:
+            match response_json['error']['message']:
                 case "EMAIL_EXISTS":
-                    self._logger.log_info("Email SignUp Failure")
+                    self._logger.info("Email SignUp Failure")
                     return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_EXISTS)
 
                 case "INVALID_EMAIL":
-                    self._logger.log_info("Email SignUp Failure")
+                    self._logger.info("Email SignUp Failure")
                     return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.INVALID_EMAIL)
 
-        self._logger.log_critical("Email SignUp Failure for Unknown Reason")
+        self._logger.critical("Email SignUp Failure for Unknown Reason")
         return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
 
     def login_email(self, email: str, password: str) -> DalAuthenticationResponse:
@@ -55,21 +62,28 @@ class AuthenticationRepository(AuthenticationRepositoryInterface):
             "password": password,
             "returnSecureToken": True
         }
-        response = self._communication.post()(self._configurations.login_url, json=payload).json()
 
-        if 'idToken' in response:
-            self._logger.log_info("Email Login Success")
+        try:
+            response = self._communication.post()(self._configurations.login_url, json=payload)
+
+        except Exception as e:
+            self._logger.critical(f"Email Login Failure: {e}")
+            return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)
+
+        response_json = response.json()
+        if 'idToken' in response_json:
+            self._logger.info("Email Login Success")
             return DalAuthenticationResponse(is_success=True, status=EmailSignUpStatus.SUCCESS, id_token=response['idToken'])
 
-        elif 'error' in response:
-            match response['error']['message']:
+        elif 'error' in response_json:
+            match response_json['error']['message']:
                 case "EMAIL_NOT_FOUND":
-                    self._logger.log_info("Email Login Failure")
+                    self._logger.info("Email Login Failure")
                     return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.EMAIL_NOT_FOUND)
 
                 case "INVALID_PASSWORD":
-                    self._logger.log_info("Email Login Failure")
+                    self._logger.info("Email Login Failure")
                     return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.INVALID_PASSWORD)
 
-        self._logger.log_critical("Email Login Failure for Unknown Reason")
+        self._logger.critical("Email Login Failure for Unknown Reason")
         return DalAuthenticationResponse(is_success=False, status=EmailSignUpStatus.UNKNOWN_ERROR)

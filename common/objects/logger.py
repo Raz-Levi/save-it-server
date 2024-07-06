@@ -5,23 +5,23 @@ from abc import ABC, abstractmethod
 
 class LoggerInterface(ABC):
     @abstractmethod
-    def log_debug(self, message) -> None:
+    def debug(self, message) -> None:
         pass
 
     @abstractmethod
-    def log_info(self, message) -> None:
+    def info(self, message) -> None:
         pass
 
     @abstractmethod
-    def log_error(self, message) -> None:
+    def error(self, message) -> None:
         pass
 
     @abstractmethod
-    def log_warning(self, message) -> None:
+    def warning(self, message) -> None:
         pass
 
     @abstractmethod
-    def log_critical(self, message) -> None:
+    def critical(self, message) -> None:
         pass
 
 
@@ -46,17 +46,17 @@ class Logger(LoggerInterface):
         self.logger.addHandler(console_handler)
         # self.logger.addHandler(dashboard_handler)
 
-    def log_debug(self, message) -> None:
+    def debug(self, message) -> None:
         self.logger.debug(message)
 
-    def log_info(self, message) -> None:
+    def info(self, message) -> None:
         self.logger.info(message)
 
-    def log_error(self, message) -> None:
+    def error(self, message) -> None:
         self.logger.error(message)
 
-    def log_warning(self, message) -> None:
+    def warning(self, message) -> None:
         self.logger.warning(message)
 
-    def log_critical(self, message) -> None:
+    def critical(self, message) -> None:
         self.logger.critical(message)
