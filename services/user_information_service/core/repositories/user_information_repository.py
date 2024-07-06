@@ -3,6 +3,8 @@ import json
 from abc import ABC, abstractmethod
 from common.interface.communication_interface import CommunicationInterface
 from common.objects.logger import LoggerInterface
+from services.user_information_service.common.enums.get_user_information_status import GetUserInformationStatus
+from services.user_information_service.common.enums.set_user_information_status import SetUserInformationStatus
 from services.user_information_service.core.configurations.user_information_service_config import UserInformationConfigurationsInterface
 from services.user_information_service.core.models.dal.user_information.dal_get_user_information_response import DalGetUserInformationResponse
 from services.user_information_service.core.models.dal.user_information.dal_set_user_information_response import DalSetUserInformationDalResponse
@@ -46,13 +48,13 @@ class UserInformationRepository(UserInformationRepositoryInterface):
 
         except Exception as e:
             self._logger.critical(f"Setting User Information Failed: {e}")
-            return DalSetUserInformationDalResponse(is_success=False)
+            return DalSetUserInformationDalResponse(is_success=False, status=SetUserInformationStatus.UNKNOWN_ERROR)
 
         if response.ok:
             self._logger.info(f'Setting User Information Success if user id {user_id}')
-            return DalSetUserInformationDalResponse(is_success=True)
+            return DalSetUserInformationDalResponse(is_success=True, status=SetUserInformationStatus.SUCCESS)
 
-        return DalSetUserInformationDalResponse(is_success=False)
+        return DalSetUserInformationDalResponse(is_success=False, status=SetUserInformationStatus.UNKNOWN_ERROR)
 
     def get_user_information_by_user_id(self, user_id: str) -> DalGetUserInformationResponse:
         try:
@@ -60,9 +62,9 @@ class UserInformationRepository(UserInformationRepositoryInterface):
 
         except Exception as e:
             self._logger.critical(f"Getting User Information Failure: {e}")
-            return DalGetUserInformationResponse(is_success=False, dal_user_information=None)
+            return DalGetUserInformationResponse(is_success=False, dal_user_information=None, status=GetUserInformationStatus.UNKNOWN_ERROR)
 
-        if response.ok:
+        if response.ok:  # TODO- find a way to determine USER_ID_NOT_FOUND
             try:
                 response_json = response.json()
                 dal_user_information = DalUserInformation(
@@ -74,9 +76,9 @@ class UserInformationRepository(UserInformationRepositoryInterface):
 
             except Exception as e:
                 self._logger.critical(f"Getting User Information Failure in parse phase: {e}")
-                return DalGetUserInformationResponse(is_success=False, dal_user_information=None)
+                return DalGetUserInformationResponse(is_success=False, dal_user_information=None, status=GetUserInformationStatus.UNKNOWN_ERROR)
 
             self._logger.info(f'Getting User Information Success if user id {user_id}')
-            return DalGetUserInformationResponse(is_success=True, dal_user_information=dal_user_information)
+            return DalGetUserInformationResponse(is_success=True, dal_user_information=dal_user_information, status=GetUserInformationStatus.SUCCESS)
 
-        return DalGetUserInformationResponse(is_success=False, dal_user_information=None)
+        return DalGetUserInformationResponse(is_success=False, dal_user_information=None, status=GetUserInformationStatus.UNKNOWN_ERROR)
